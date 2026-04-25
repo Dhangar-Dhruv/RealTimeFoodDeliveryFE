@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Complete your food order on FoodHub. Enter delivery address, select payment, and place your order." />
+  <title>Checkout — FoodHub</title>
+  <style>body{opacity:0;transition:opacity 0.2s ease-in;}</style>
+  <script>window.addEventListener('DOMContentLoaded',()=>document.body.style.opacity='1');</script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div class="container-fluid m-0 p-0 position-sticky top-0" style="z-index:100;">
+    <nav id="mainNavbar" class="navbar navbar-expand-md fh-navbar" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a id="navLogo" href="./index.html" class="navbar-brand"><span>Food</span>Hub</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul id="navLinks" class="navbar-nav mx-auto gap-1">
+            <li class="nav-item"><a href="./index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="./menu.html" class="nav-link">Restaurants</a></li>
+            <li class="nav-item"><a href="./orders.html" class="nav-link">Orders</a></li>
+          </ul>
+          <div class="d-flex align-items-center gap-3">
+            <a href="./cart.html" class="fh-nav-icon" id="navCart" aria-label="Cart">
+              <i class="bi bi-bag"></i>
+              <span class="fh-nav-badge" id="navCartBadge" style="display:none;"></span>
+            </a>
+            <a href="./profile.html" class="fh-avatar-sm" id="navAvatar" aria-label="Profile" style="display:none;">
+              <i class="bi bi-person" id="navAvatarIcon"></i>
+            </a>
+            <a href="./login.html" class="btn btn-outline-primary btn-sm" id="navLoginBtn" style="display:none; font-weight: 600;">Login</a>
+            <button class="btn btn-sm text-danger" id="navLogoutBtn" style="display:none; font-size: 1.25rem;" title="Logout">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container mt-4 mb-5">
+    <h2 class="fh-section-title mb-4"><i class="bi bi-bag-check" style="color:var(--primary);"></i> Checkout</h2>
+
+    <!-- Progress Bar -->
+    <div class="d-flex justify-content-center mb-4">
+      <div class="col-md-8 col-12">
+        <div class="position-relative m-4">
+          <div class="progress" style="height:3px;" id="cust-progress">
+            <div class="progress-bar" style="background:var(--primary);"></div>
+          </div>
+          <button type="button" class="position-absolute top-0 start-0 translate-middle btn btn-sm rounded-circle" style="width:2.2rem;height:2.2rem;background:var(--primary);color:white;border:none;" id="progress-btn-1">1</button>
+          <button type="button" class="position-absolute top-0 start-50 translate-middle btn btn-sm rounded-circle" style="width:2.2rem;height:2.2rem;background:var(--gray-400);color:white;border:none;" id="progress-btn-2">2</button>
+          <button type="button" class="position-absolute top-0 start-100 translate-middle btn btn-sm rounded-circle" style="width:2.2rem;height:2.2rem;background:var(--gray-400);color:white;border:none;" id="progress-btn-3">3</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-7">
+        <!-- Step 1: Address -->
+        <div id="stepAddress" class="fh-card p-4 fade-in" data-step="1">
+          <div class="d-flex align-items-center mb-3">
+            <div class="fh-feature-icon orange" style="width:44px;height:44px;font-size:1.1rem;margin:0;">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="fw-bold mb-0">Delivery Address</h5>
+              <small style="color:var(--gray-600);">STEP 1 OF 3</small>
+            </div>
+          </div>
+          <form class="row g-3" id="addressForm" novalidate>
+            <div class="col-12">
+              <label for="addressLine1" class="form-label fw-bold" style="font-size:var(--fs-sm);">Street Address</label>
+              <input type="text" class="form-control" id="addressLine1" placeholder="e.g. 123 MG Road, Apartment 4B" style="border-radius:var(--radius-sm);" data-required="true" data-minlength="10" data-error-minlength="Minimum 10 characters required" />
+              <div class="invalid-feedback" style="font-size:var(--fs-xs);">Street address is required.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="addressCity" class="form-label fw-bold" style="font-size:var(--fs-sm);">City</label>
+              <input id="addressCity" type="text" class="form-control" placeholder="e.g. Mumbai" style="border-radius:var(--radius-sm);" data-required="true" />
+              <div class="invalid-feedback" style="font-size:var(--fs-xs);">City is required.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="addressZip" class="form-label fw-bold" style="font-size:var(--fs-sm);">PIN Code</label>
+              <input id="addressZip" type="text" maxlength="6" class="form-control" placeholder="e.g. 400001" style="border-radius:var(--radius-sm);" data-required="true" data-exactlength="6" data-type="numeric" />
+              <div class="invalid-feedback" style="font-size:var(--fs-xs);">Enter a valid 6-digit PIN code.</div>
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="saveAddressCheckbox" />
+                <label class="form-check-label" for="saveAddressCheckbox" style="font-size:var(--fs-sm);">Save this address for future orders</label>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 2: Payment -->
+        <div id="stepPayment" class="fh-card p-4 fade-in" data-step="2" style="display:none;">
+          <div class="d-flex align-items-center mb-3">
+            <div class="fh-feature-icon blue" style="width:44px;height:44px;font-size:1.1rem;margin:0;">
+              <i class="bi bi-credit-card"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="fw-bold mb-0">Payment Method</h5>
+              <small style="color:var(--gray-600);">STEP 2 OF 3</small>
+            </div>
+          </div>
+          <div class="d-flex flex-column gap-2">
+            <label class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--gray-100);cursor:pointer;transition:all 150ms;">
+              <input type="radio" name="paymentMethod" value="cash" class="form-check-input" />
+              <i class="bi bi-cash-coin fs-5" style="color:var(--success);"></i>
+              <div>
+                <span class="fw-bold" style="font-size:var(--fs-sm);">Cash on Delivery</span>
+                <small class="d-block" style="color:var(--gray-600);font-size:var(--fs-xs);">Pay when your order arrives</small>
+              </div>
+            </label>
+            <label class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--gray-100);cursor:pointer;transition:all 150ms;">
+              <input type="radio" name="paymentMethod" value="card" class="form-check-input" />
+              <i class="bi bi-credit-card-2-front fs-5" style="color:var(--info);"></i>
+              <div>
+                <span class="fw-bold" style="font-size:var(--fs-sm);">Credit/Debit Card</span>
+                <small class="d-block" style="color:var(--gray-600);font-size:var(--fs-xs);">Visa, Mastercard accepted</small>
+              </div>
+            </label>
+            <div id="cardFields" style="display:none;" class="p-3 rounded-3" role="group" aria-label="Card details"
+              style2="background:var(--gray-100);">
+              <form class="row g-3" id="paymentForm" novalidate>
+                <div class="col-12">
+                  <input id="cardNumber" type="text" inputmode="numeric" placeholder="Card Number (16 digits)" maxlength="16" class="form-control" style="border-radius:var(--radius-sm);" data-required="true" data-type="numeric" data-exactlength="16" />
+                  <div class="invalid-feedback" style="font-size:var(--fs-xs);">Valid 16-digit card required.</div>
+                </div>
+                <div class="col-6">
+                  <input id="cardExpiry" type="text" placeholder="MM/YY" maxlength="5" class="form-control" style="border-radius:var(--radius-sm);" data-required="true" data-exactlength="5" data-error-exact="Format MM/YY required" />
+                  <div class="invalid-feedback" style="font-size:var(--fs-xs);">Expiry required.</div>
+                </div>
+                <div class="col-6">
+                  <input id="cardCVV" type="text" inputmode="numeric" placeholder="CVV" maxlength="3" class="form-control" style="border-radius:var(--radius-sm);" data-required="true" data-type="numeric" data-exactlength="3" />
+                  <div class="invalid-feedback" style="font-size:var(--fs-xs);">Valid 3-digit CVV required.</div>
+                </div>
+              </form>
+            </div>
+            <label class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--gray-100);cursor:pointer;transition:all 150ms;">
+              <input type="radio" name="paymentMethod" value="wallet" class="form-check-input" />
+              <i class="bi bi-wallet2 fs-5" style="color:var(--accent-dark);"></i>
+              <div>
+                <span class="fw-bold" style="font-size:var(--fs-sm);">Digital Wallet</span>
+                <small class="d-block" style="color:var(--gray-600);font-size:var(--fs-xs);">UPI, Paytm, Google Pay</small>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 3: Confirmation -->
+        <div id="finalConfirmation" class="fh-card p-4 fade-in" data-step="3" style="display:none;">
+          <div class="d-flex align-items-center mb-3">
+            <div class="fh-feature-icon green" style="width:44px;height:44px;font-size:1.1rem;margin:0;">
+              <i class="bi bi-check2-circle"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="fw-bold mb-0">Confirm & Place Order</h5>
+              <small style="color:var(--gray-600);">STEP 3 OF 3</small>
+            </div>
+          </div>
+          <div class="p-3 rounded-3 mb-3" style="background:var(--gray-100);">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <small class="fw-bold text-uppercase" style="color:var(--gray-600);letter-spacing:0.5px;font-size:var(--fs-xs);">Deliver To</small>
+                <p id="finalAddress" class="mb-0 fw-bold" style="font-size:var(--fs-sm);">—</p>
+              </div>
+              <a href="#" id="editAddressLink" style="color:var(--primary);font-weight:600;font-size:var(--fs-xs);text-decoration:none;">EDIT</a>
+            </div>
+          </div>
+          <div class="p-3 rounded-3" style="background:var(--gray-100);">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <small class="fw-bold text-uppercase" style="color:var(--gray-600);letter-spacing:0.5px;font-size:var(--fs-xs);">Payment Method</small>
+                <p id="finalPayment" class="mb-0 fw-bold" style="font-size:var(--fs-sm);">—</p>
+              </div>
+              <a href="#" id="editPaymentLink" style="color:var(--primary);font-weight:600;font-size:var(--fs-xs);text-decoration:none;">EDIT</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="d-flex justify-content-between mt-4">
+          <button type="button" class="fh-btn-dark" style="background:var(--gray-200);color:var(--dark);" id="checkoutBackBtn">
+            <i class="bi bi-arrow-left"></i> Back
+          </button>
+          <button type="button" class="fh-btn-primary" id="checkoutContinueBtn">
+            Continue <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="col-lg-4">
+        <div class="fh-card p-4 sticky-top" style="top:90px;">
+          <h5 class="fw-bold mb-3">Order Summary</h5>
+          <div id="cartSummarySection"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal (injected by JS) -->
+  <div id="successModal"></div>
+
+  <script type="module" src="./src/services/checkout.ts"></script>
+</body>
+
+</html>

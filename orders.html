@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Track your food deliveries in real-time and view order history on FoodHub." />
+  <title>Your Orders — FoodHub</title>
+  <style>body{opacity:0;transition:opacity 0.2s ease-in;}</style>
+  <script>window.addEventListener('DOMContentLoaded',()=>document.body.style.opacity='1');</script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div class="container-fluid m-0 p-0 position-sticky top-0" style="z-index:100;">
+    <nav id="mainNavbar" class="navbar navbar-expand-md fh-navbar" role="navigation">
+      <div class="container">
+        <a id="navLogo" href="./index.html" class="navbar-brand"><span>Food</span>Hub</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul id="navLinks" class="navbar-nav mx-auto gap-1">
+            <li class="nav-item"><a href="./index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="./menu.html" class="nav-link">Restaurants</a></li>
+            <li class="nav-item"><a href="./orders.html" class="nav-link active">Orders</a></li>
+          </ul>
+          <div class="d-flex align-items-center gap-3">
+            <a href="./cart.html" class="fh-nav-icon" id="navCart" aria-label="Cart">
+              <i class="bi bi-bag"></i>
+              <span class="fh-nav-badge" id="navCartBadge" style="display:none;"></span>
+            </a>
+            <a href="./profile.html" class="fh-avatar-sm" id="navAvatar" aria-label="Profile" style="display:none;">
+              <i class="bi bi-person" id="navAvatarIcon"></i>
+            </a>
+            <a href="./login.html" class="btn btn-outline-primary btn-sm" id="navLoginBtn" style="display:none; font-weight: 600;">Login</a>
+            <button class="btn btn-sm text-danger" id="navLogoutBtn" style="display:none; font-size: 1.25rem;" title="Logout">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container mt-4 mb-5">
+    <h2 class="fh-section-title mb-1"><i class="bi bi-clock-history" style="color:var(--primary);"></i> My Orders</h2>
+    <p class="fh-section-subtitle" id="ordersSubtitle">Loading...</p>
+
+    <!-- Active Order Tracking -->
+    <div id="activeOrderSection" style="display:none;" class="mb-4">
+      <div class="fh-card p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h5 class="fw-bold mb-1">Live Tracking</h5>
+            <p class="mb-0" style="font-size:var(--fs-sm);color:var(--gray-600);">Order <strong id="activeOrderId"></strong></p>
+          </div>
+          <span class="fh-status-badge" id="activeOrderStatus"></span>
+        </div>
+
+        <!-- Tracking Steps -->
+        <div id="trackingSteps" class="mb-4"></div>
+
+        <!-- Delivery Info -->
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 rounded-3" style="background:var(--gray-100);">
+              <small class="fw-bold text-uppercase" style="color:var(--gray-600);letter-spacing:0.5px;font-size:var(--fs-xs);">Estimated Delivery</small>
+              <p class="fw-bold mb-0" id="etaCountdown" style="color:var(--primary);font-size:var(--fs-lg);">Calculating...</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-3" style="background:var(--gray-100);">
+              <small class="fw-bold text-uppercase" style="color:var(--gray-600);letter-spacing:0.5px;font-size:var(--fs-xs);">Delivery Partner</small>
+              <p class="fw-bold mb-0" id="deliveryPerson" style="font-size:var(--fs-sm);"></p>
+              <small id="deliveryPhone" style="color:var(--gray-600);"></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order History -->
+    <div id="orderHistory"></div>
+
+    <!-- Empty State -->
+    <div id="noOrders" style="display:none;">
+      <div class="fh-empty-state">
+        <i class="bi bi-receipt d-block"></i>
+        <h4>No orders yet</h4>
+        <p>When you place your first order, it will appear here.</p>
+        <a href="./menu.html" class="fh-btn-primary mt-2" style="display:inline-flex;">
+          <i class="bi bi-search"></i> Browse Restaurants
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="fh-footer">
+    <div class="container">
+      <div class="fh-footer-bottom text-center">
+        <p class="mb-0">&copy; 2026 FoodHub. Made with ❤️</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/services/orders.ts"></script>
+</body>
+
+</html>

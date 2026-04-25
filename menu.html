@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browse restaurants on FoodHub. Filter by cuisine, rating, and delivery time." />
+  <title>Restaurants — FoodHub</title>
+  <style>body{opacity:0;transition:opacity 0.2s ease-in;}</style>
+  <script>window.addEventListener('DOMContentLoaded',()=>document.body.style.opacity='1');</script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div class="container-fluid m-0 p-0 position-sticky top-0" style="z-index:100;">
+    <nav id="mainNavbar" class="navbar navbar-expand-md fh-navbar" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a id="navLogo" href="./index.html" class="navbar-brand"><span>Food</span>Hub</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul id="navLinks" class="navbar-nav mx-auto gap-1">
+            <li class="nav-item"><a id="navHome" href="./index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a id="navRestaurants" href="./menu.html" class="nav-link active">Restaurants</a></li>
+            <li class="nav-item"><a id="navOrders" href="./orders.html" class="nav-link">Orders</a></li>
+          </ul>
+          <div class="d-flex align-items-center gap-3">
+            <a href="./cart.html" class="fh-nav-icon" id="navCart" aria-label="Cart">
+              <i class="bi bi-bag"></i>
+              <span class="fh-nav-badge" id="navCartBadge" style="display:none;"></span>
+            </a>
+            <a href="./profile.html" class="fh-avatar-sm" id="navAvatar" aria-label="Profile" style="display:none;">
+              <i class="bi bi-person" id="navAvatarIcon"></i>
+            </a>
+            <a href="./login.html" class="btn btn-outline-primary btn-sm" id="navLoginBtn" style="display:none; font-weight: 600;">Login</a>
+            <button class="btn btn-sm text-danger" id="navLogoutBtn" style="display:none; font-size: 1.25rem;" title="Logout">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Page Header -->
+  <div class="container mt-4 mb-3">
+    <h2 class="fh-section-title mb-0">All Restaurants</h2>
+    <p class="fh-section-subtitle mb-0 mt-1" id="restaurantCount">Loading...</p>
+  </div>
+
+  <!-- Search + Content -->
+  <div class="container">
+    <div class="row g-4">
+      <!-- Sidebar Filters -->
+      <div class="col-lg-3 d-none d-lg-block">
+        <div class="fh-filter-card sticky-top" style="top:90px;">
+          <div class="mb-4">
+            <p class="fh-filter-title">Cuisine</p>
+            <div id="cuisineFilters" class="d-flex flex-column gap-1"></div>
+          </div>
+          <div class="mb-4">
+            <p class="fh-filter-title">Rating</p>
+            <div id="ratingFilters" class="d-flex flex-column gap-1">
+              <label class="fh-custom-control fh-radio"><input type="radio" name="rating" value="0" checked /> <span class="fh-check-mark"></span> All Ratings</label>
+              <label class="fh-custom-control fh-radio"><input type="radio" name="rating" value="4.5" /> <span class="fh-check-mark"></span> 4.5+ Stars</label>
+              <label class="fh-custom-control fh-radio"><input type="radio" name="rating" value="4" /> <span class="fh-check-mark"></span> 4.0+ Stars</label>
+              <label class="fh-custom-control fh-radio"><input type="radio" name="rating" value="3" /> <span class="fh-check-mark"></span> 3.0+ Stars</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <p class="fh-filter-title">Sort By</p>
+            <select id="sortSelect" class="form-select form-select-sm" style="border-radius: var(--radius-sm);">
+              <option value="rating">Rating (High → Low)</option>
+              <option value="deliveryTime">Delivery Time</option>
+              <option value="reviews">Most Reviews</option>
+              <option value="name">Name (A-Z)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9">
+        <!-- Search -->
+        <div class="fh-search-wrapper mb-4">
+          <i class="bi bi-search"></i>
+          <input type="text" id="restaurantSearch" class="fh-search-input" placeholder="Search restaurants or cuisines..." />
+        </div>
+
+        <!-- Restaurant Grid -->
+        <div class="row g-3" id="restaurantGrid">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" style="display:none;">
+          <div class="fh-empty-state">
+            <i class="bi bi-emoji-frown d-block"></i>
+            <h4>No restaurants found</h4>
+            <p>Try adjusting your filters or search term.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="fh-footer mt-5">
+    <div class="container">
+      <div class="fh-footer-bottom text-center">
+        <p class="mb-0">&copy; 2026 FoodHub. Made with ❤️ | All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/services/menu.ts"></script>
+</body>
+
+</html>

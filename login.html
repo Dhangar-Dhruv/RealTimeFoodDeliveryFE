@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Login to FoodHub to order and track your deliveries." />
+  <title>Login &mdash; FoodHub</title>
+  
+  <style>body{opacity:0;transition:opacity 0.2s ease-in;}</style>
+  <script>window.addEventListener('DOMContentLoaded',()=>document.body.style.opacity='1');</script>
+</head>
+<body class="bg-light">
+
+  <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100 py-5">
+    <a href="./index.html" class="text-decoration-none mb-4 d-flex align-items-center gap-2" style="font-size:1.5rem;font-weight:700;color:var(--dark);">
+      <span style="color:var(--primary);">Food</span>Hub
+    </a>
+
+    <div class="card shadow-sm border-0 w-100" style="max-width:400px; border-radius:var(--radius-lg);">
+      <div class="card-body p-4 p-md-5">
+        
+        <!-- Toggle Buttons -->
+        <div class="d-flex mb-4 border-bottom pb-2 gap-3" style="font-weight:600; font-size:var(--fs-lg);">
+          <div id="tabLogin" class="cursor-pointer" style="color:var(--primary); border-bottom:2px solid var(--primary); padding-bottom:0.25rem;">Login</div>
+          <div id="tabRegister" class="cursor-pointer text-muted" style="padding-bottom:0.25rem;">Register</div>
+        </div>
+
+        <form id="authForm" novalidate>
+          <div id="alertMsg" class="alert alert-danger" style="display:none; font-size:var(--fs-sm);"></div>
+
+          <div class="mb-3" id="nameGroup" style="display:none;">
+            <label class="form-label" style="font-weight:600; font-size:var(--fs-sm);">Full Name</label>
+            <input type="text" id="inputName" class="form-control mb-1" placeholder="John Doe" style="border-radius:var(--radius-sm);" data-required="true" data-error-required="Please enter your full name." />
+            <div class="invalid-feedback" style="font-size:var(--fs-xs);">Please enter your full name.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" style="font-weight:600; font-size:var(--fs-sm);">Email Address</label>
+            <input type="email" id="inputEmail" class="form-control mb-1" placeholder="john@example.com" style="border-radius:var(--radius-sm);" data-required="true" data-type="email" data-error-required="Please provide an email address." data-error-email="Please enter a valid email address." />
+            <div class="invalid-feedback" style="font-size:var(--fs-xs);">Please enter a valid email address.</div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" style="font-weight:600; font-size:var(--fs-sm);">Password</label>
+            <input type="password" id="inputPassword" class="form-control mb-1" placeholder="••••••••" style="border-radius:var(--radius-sm);" data-required="true" data-minlength="6" data-error-required="Please provide a password." data-error-minlength="Password must be at least 6 characters." />
+            <div class="invalid-feedback" style="font-size:var(--fs-xs);">Password must be at least 6 characters.</div>
+          </div>
+
+          <button type="submit" class="btn fh-btn-primary w-100" id="submitBtn">Sign In</button>
+        </form>
+
+        <p class="text-center text-muted mt-4 mb-0" style="font-size:var(--fs-xs);">
+          By continuing, you agree to FoodHub's Terms of Service and Privacy Policy.
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/services/login.ts"></script>
+</body>
+</html>

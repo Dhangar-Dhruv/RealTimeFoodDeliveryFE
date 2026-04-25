@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="FoodHub — Order delicious food from the best restaurants near you. Fast delivery, exclusive deals, and real-time tracking." />
+  <title>FoodHub &mdash; Food Delivery Made Easy</title>
+  <style>body{opacity:0;transition:opacity 0.2s ease-in;}</style>
+  <script>window.addEventListener('DOMContentLoaded',()=>document.body.style.opacity='1');</script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div class="container-fluid m-0 p-0 position-sticky top-0" style="z-index:100;">
+    <nav id="mainNavbar" class="navbar navbar-expand-md fh-navbar" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a id="navLogo" href="./index.html" class="navbar-brand"><span>Food</span>Hub</a>
+
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul id="navLinks" class="navbar-nav mx-auto gap-1">
+            <li class="nav-item"><a id="navHome" href="./index.html" class="nav-link active">Home</a></li>
+            <li class="nav-item"><a id="navRestaurants" href="./menu.html" class="nav-link">Restaurants</a></li>
+            <li class="nav-item"><a id="navOrders" href="./orders.html" class="nav-link">Orders</a></li>
+          </ul>
+          <div class="d-flex align-items-center gap-3">
+            <a href="./cart.html" class="fh-nav-icon" id="navCart" aria-label="Cart">
+              <i class="bi bi-bag"></i>
+              <span class="fh-nav-badge" id="navCartBadge" style="display:none;"></span>
+            </a>
+            <a href="./profile.html" class="fh-avatar-sm" id="navAvatar" aria-label="Profile" style="display:none;">
+              <i class="bi bi-person" id="navAvatarIcon"></i>
+            </a>
+            <a href="./login.html" class="btn btn-outline-primary btn-sm" id="navLoginBtn" style="display:none; font-weight: 600;">Login</a>
+            <button class="btn btn-sm text-danger" id="navLogoutBtn" style="display:none; font-size: 1.25rem;" title="Logout">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="fh-hero" id="heroSection">
+    <div class="container position-relative" style="z-index:1;">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1 class="fh-hero-title fade-in">
+            Delicious Food,<br />
+            <span class="highlight">Delivered Fast.</span>
+          </h1>
+          <p class="fh-hero-subtitle fade-in">
+            Order from the best local restaurants with easy-to-use ordering, real-time tracking, and exclusive deals you won't find anywhere else.
+          </p>
+          <div class="d-flex gap-3 flex-wrap fade-in">
+            <a href="./menu.html" class="fh-btn-primary">
+              <i class="bi bi-search"></i> Explore Restaurants
+            </a>
+            <a href="#howItWorks" class="fh-btn-outline">
+              How It Works
+            </a>
+          </div>
+          <div class="d-flex gap-4 mt-4 fade-in">
+            <div>
+              <h4 class="mb-0 fw-bold" style="color:var(--accent);">10+</h4>
+              <small style="color:rgba(255,255,255,0.5);">Restaurants</small>
+            </div>
+            <div>
+              <h4 class="mb-0 fw-bold" style="color:var(--accent);">30min</h4>
+              <small style="color:rgba(255,255,255,0.5);">Avg. Delivery</small>
+            </div>
+            <div>
+              <h4 class="mb-0 fw-bold" style="color:var(--accent);">50%</h4>
+              <small style="color:rgba(255,255,255,0.5);">Max Discount</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block text-center">
+          <div style="font-size: 12rem; opacity: 0.15; position: absolute; right: 0; top: -40px;">🍔</div>
+          <div style="font-size: 8rem; opacity: 0.1; position: absolute; right: 200px; top: 80px;">🍕</div>
+          <div style="font-size: 6rem; opacity: 0.1; position: absolute; right: 50px; bottom: 0;">🌮</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Cuisines -->
+  <section class="fh-section" id="cuisinesSection">
+    <div class="container">
+      <h2 class="fh-section-title text-center">What Are You Craving?</h2>
+      <p class="fh-section-subtitle text-center">Explore by cuisine type</p>
+      <div class="d-flex flex-wrap justify-content-center gap-3" id="cuisinePills">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Restaurants -->
+  <section class="fh-section" style="background: var(--gray-100);" id="featuredSection">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fh-section-title mb-0">Featured Restaurants</h2>
+          <p class="fh-section-subtitle mb-0 mt-1">Handpicked for you</p>
+        </div>
+        <a href="./menu.html" class="fh-btn-dark">
+          View All <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+      <div class="row g-4" id="featuredRestaurants">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="fh-section" id="howItWorks">
+    <div class="container">
+      <h2 class="fh-section-title text-center">How It Works</h2>
+      <p class="fh-section-subtitle text-center">Get your food in 3 simple steps</p>
+      <div class="row g-4 mt-2">
+        <div class="col-md-4">
+          <div class="fh-feature-card h-100">
+            <div class="fh-feature-icon orange">
+              <i class="bi bi-search"></i>
+            </div>
+            <h5 class="fw-bold">Browse & Choose</h5>
+            <p class="text-muted mb-0" style="font-size: var(--fs-sm);">Explore restaurants and menus. Filter by cuisine, rating, or delivery time.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="fh-feature-card h-100">
+            <div class="fh-feature-icon blue">
+              <i class="bi bi-credit-card"></i>
+            </div>
+            <h5 class="fw-bold">Place Your Order</h5>
+            <p class="text-muted mb-0" style="font-size: var(--fs-sm);">Add items to cart, apply coupons, and pay securely with card, cash, or wallet.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="fh-feature-card h-100">
+            <div class="fh-feature-icon green">
+              <i class="bi bi-truck"></i>
+            </div>
+            <h5 class="fw-bold">Track & Enjoy</h5>
+            <p class="text-muted mb-0" style="font-size: var(--fs-sm);">Real-time delivery tracking. Know exactly when your food arrives.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Banner -->
+  <section style="background: linear-gradient(135deg, #1A1A2E, #16213E); padding: 3rem 0;">
+    <div class="container">
+      <div class="row text-center text-white g-4">
+        <div class="col-6 col-md-3">
+          <h3 class="fw-bold mb-0" style="color: var(--accent);">2,500+</h3>
+          <small style="opacity: 0.7;">Happy Customers</small>
+        </div>
+        <div class="col-6 col-md-3">
+          <h3 class="fw-bold mb-0" style="color: var(--accent);">10</h3>
+          <small style="opacity: 0.7;">Partner Restaurants</small>
+        </div>
+        <div class="col-6 col-md-3">
+          <h3 class="fw-bold mb-0" style="color: var(--accent);">25k+</h3>
+          <small style="opacity: 0.7;">Orders Delivered</small>
+        </div>
+        <div class="col-6 col-md-3">
+          <h3 class="fw-bold mb-0" style="color: var(--accent);">4.8</h3>
+          <small style="opacity: 0.7;">Average Rating</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="fh-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <a href="./index.html" class="fh-footer-brand d-block mb-3">FoodHub</a>
+          <p style="font-size: var(--fs-sm); max-width: 280px;">
+            Your favorite food, delivered fast. We partner with the best local restaurants to bring premium meals to your doorstep.
+          </p>
+        </div>
+        <div class="col-6 col-md-2">
+          <h6>Quick Links</h6>
+          <a href="./index.html">Home</a>
+          <a href="./menu.html">Restaurants</a>
+          <a href="./orders.html">My Orders</a>
+          <a href="./profile.html">Profile</a>
+        </div>
+        <div class="col-6 col-md-2">
+          <h6>Support</h6>
+          <a href="#">Help Center</a>
+          <a href="#">FAQ</a>
+          <a href="#">Contact Us</a>
+          <a href="#">Terms of Service</a>
+        </div>
+        <div class="col-md-4">
+          <h6>Stay Connected</h6>
+          <p style="font-size: var(--fs-sm);">Get exclusive deals and updates delivered to your inbox.</p>
+          <div class="d-flex gap-2">
+            <input type="email" placeholder="Your email" class="form-control form-control-sm" style="border-radius: var(--radius-full); background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;" />
+            <button class="btn btn-sm px-3" style="background: var(--primary); color: white; border-radius: var(--radius-full);">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="fh-footer-bottom text-center">
+        <p class="mb-0">&copy; 2026 FoodHub. Made with ❤️ | All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/services/main.ts"></script>
+</body>
+
+</html>

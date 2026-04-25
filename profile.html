@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Manage your FoodHub profile, saved addresses, and account settings." />
+  <title>My Profile — FoodHub</title>
+  <style>body{opacity:0;transition:opacity 0.2s ease-in;}</style>
+  <script>window.addEventListener('DOMContentLoaded',()=>document.body.style.opacity='1');</script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div class="container-fluid m-0 p-0 position-sticky top-0" style="z-index:100;">
+    <nav id="mainNavbar" class="navbar navbar-expand-md fh-navbar" role="navigation">
+      <div class="container">
+        <a id="navLogo" href="./index.html" class="navbar-brand"><span>Food</span>Hub</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul id="navLinks" class="navbar-nav mx-auto gap-1">
+            <li class="nav-item"><a href="./index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="./menu.html" class="nav-link">Restaurants</a></li>
+            <li class="nav-item"><a href="./orders.html" class="nav-link">Orders</a></li>
+          </ul>
+          <div class="d-flex align-items-center gap-3">
+            <a href="./cart.html" class="fh-nav-icon" id="navCart" aria-label="Cart">
+              <i class="bi bi-bag"></i>
+              <span class="fh-nav-badge" id="navCartBadge" style="display:none;"></span>
+            </a>
+            <a href="./profile.html" class="fh-avatar-sm" id="navAvatar" aria-label="Profile" style="display:none;">
+              <i class="bi bi-person" id="navAvatarIcon"></i>
+            </a>
+            <a href="./login.html" class="btn btn-outline-primary btn-sm" id="navLoginBtn" style="display:none; font-weight: 600;">Login</a>
+            <button class="btn btn-sm text-danger" id="navLogoutBtn" style="display:none; font-size: 1.25rem;" title="Logout">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container mt-4 mb-5">
+    <div class="row g-4">
+      <!-- Profile Card -->
+      <div class="col-lg-4">
+        <div class="fh-card p-4 text-center">
+          <!-- Profile Photo Upload -->
+          <div class="fh-avatar-upload mx-auto mb-3" id="avatarUploadArea">
+            <div class="fh-avatar-lg" id="profileAvatar">?</div>
+            <img id="profilePhoto" class="fh-avatar-photo" src="" alt="Profile" style="display:none;" />
+            <div class="fh-avatar-overlay" id="avatarOverlay">
+              <i class="bi bi-camera-fill"></i>
+              <small>Change</small>
+            </div>
+            <input type="file" id="photoUpload" accept="image/*" style="display:none;" />
+          </div>
+          <h5 class="fw-bold mb-1" id="profileName">New User</h5>
+          <p style="color:var(--gray-600);font-size:var(--fs-sm);" id="profileEmail">Set up your profile</p>
+          <hr />
+          <div class="d-flex justify-content-around">
+            <div>
+              <h5 class="fw-bold mb-0" id="totalOrders">0</h5>
+              <small style="color:var(--gray-600);">Orders</small>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0" id="totalAddresses">0</h5>
+              <small style="color:var(--gray-600);">Addresses</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Details -->
+      <div class="col-lg-8">
+        <!-- Edit Profile -->
+        <div class="fh-card p-4 mb-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="fh-feature-icon orange" style="width:40px;height:40px;font-size:1rem;margin:0;"><i class="bi bi-person-gear"></i></div>
+            <h5 class="fw-bold mb-0 ms-3">Personal Information</h5>
+          </div>
+          <form id="profileForm" class="row g-3" novalidate>
+            <div class="col-md-6">
+              <label for="inputName" class="form-label fw-bold" style="font-size:var(--fs-sm);">Full Name</label>
+              <input type="text" class="form-control" id="inputName" placeholder="Enter your name" style="border-radius:var(--radius-sm);" data-required="true" />
+              <div class="invalid-feedback" style="font-size:var(--fs-xs);">Name is required.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="inputEmail" class="form-label fw-bold" style="font-size:var(--fs-sm);">Email</label>
+              <input type="email" class="form-control" id="inputEmail" placeholder="Enter your email" style="border-radius:var(--radius-sm);" data-required="true" data-type="email" />
+              <div class="invalid-feedback" style="font-size:var(--fs-xs);">Valid email is required.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="inputPhone" class="form-label fw-bold" style="font-size:var(--fs-sm);">Phone</label>
+              <input type="tel" class="form-control" id="inputPhone" placeholder="+91 XXXXX XXXXX" style="border-radius:var(--radius-sm);" data-required="true" data-type="numeric" data-minlength="10" data-error-minlength="Valid phone required." />
+              <div class="invalid-feedback" style="font-size:var(--fs-xs);">Phone numbers only.</div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="fh-btn-primary" id="saveProfileBtn">
+                <i class="bi bi-check-lg"></i> Save Profile
+              </button>
+              <small id="profileSaveMsg" class="ms-3" style="color:var(--success);display:none;font-weight:600;">✓ Saved!</small>
+            </div>
+          </form>
+        </div>
+
+        <!-- Saved Addresses -->
+        <div class="fh-card p-4 mb-4">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center">
+              <div class="fh-feature-icon blue" style="width:40px;height:40px;font-size:1rem;margin:0;"><i class="bi bi-geo-alt"></i></div>
+              <h5 class="fw-bold mb-0 ms-3">Saved Addresses</h5>
+            </div>
+            <button class="fh-btn-dark" style="padding:0.4rem 1rem;font-size:var(--fs-xs);" id="addAddressBtn">
+              <i class="bi bi-plus-lg"></i> Add
+            </button>
+          </div>
+          <!-- Add Address Form (hidden) -->
+          <form id="addAddressForm" class="p-3 rounded-3 mb-3" style="background:var(--gray-100);display:none;" novalidate>
+            <div class="row g-2">
+              <div class="col-12">
+                <input type="text" class="form-control form-control-sm" id="newStreet" placeholder="Street Address" style="border-radius:var(--radius-sm);" data-required="true" data-minlength="5" />
+                <div class="invalid-feedback" style="font-size:var(--fs-xs);">Valid street address required.</div>
+              </div>
+              <div class="col-6">
+                <input type="text" class="form-control form-control-sm" id="newCity" placeholder="City" style="border-radius:var(--radius-sm);" data-required="true" />
+                <div class="invalid-feedback" style="font-size:var(--fs-xs);">City required.</div>
+              </div>
+              <div class="col-6">
+                <input type="text" class="form-control form-control-sm" id="newZip" placeholder="PIN Code" maxlength="6" style="border-radius:var(--radius-sm);" data-required="true" data-exactlength="6" data-type="numeric" />
+                <div class="invalid-feedback" style="font-size:var(--fs-xs);">Valid PIN code required.</div>
+              </div>
+              <div class="col-12 d-flex gap-2">
+                <button class="btn btn-sm btn-dark" id="saveNewAddress">Save</button>
+                <button class="btn btn-sm btn-outline-dark" id="cancelNewAddress">Cancel</button>
+              </div>
+            </div>
+          </form>
+          <div id="addressList"></div>
+          <div id="noAddresses" style="display:none;">
+            <p class="text-center mb-0" style="color:var(--gray-600);font-size:var(--fs-sm);">No saved addresses yet.</p>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="fh-card p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="fh-feature-icon green" style="width:40px;height:40px;font-size:1rem;margin:0;"><i class="bi bi-clock-history"></i></div>
+            <h5 class="fw-bold mb-0 ms-3">Recent Orders</h5>
+          </div>
+          <div id="recentOrders"></div>
+          <div id="noRecentOrders" style="display:none;">
+            <p class="text-center mb-0" style="color:var(--gray-600);font-size:var(--fs-sm);">No orders to show.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="fh-footer">
+    <div class="container">
+      <div class="fh-footer-bottom text-center">
+        <p class="mb-0">&copy; 2026 FoodHub. Made with ❤️</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/services/profile.ts"></script>
+</body>
+
+</html>

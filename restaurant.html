@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browse menu items and order food from this restaurant on FoodHub." />
+  <title>Menu — FoodHub</title>
+  <style>body{opacity:0;transition:opacity 0.2s ease-in;}</style>
+  <script>window.addEventListener('DOMContentLoaded',()=>document.body.style.opacity='1');</script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div class="container-fluid m-0 p-0 position-sticky top-0" style="z-index:100;">
+    <nav id="mainNavbar" class="navbar navbar-expand-md fh-navbar" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a id="navLogo" href="./index.html" class="navbar-brand"><span>Food</span>Hub</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul id="navLinks" class="navbar-nav mx-auto gap-1">
+            <li class="nav-item"><a href="./index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="./menu.html" class="nav-link active">Restaurants</a></li>
+            <li class="nav-item"><a href="./orders.html" class="nav-link">Orders</a></li>
+          </ul>
+          <div class="d-flex align-items-center gap-3">
+            <a href="./cart.html" class="fh-nav-icon" id="navCart" aria-label="Cart">
+              <i class="bi bi-bag"></i>
+              <span class="fh-nav-badge" id="navCartBadge" style="display:none;"></span>
+            </a>
+            <a href="./profile.html" class="fh-avatar-sm" id="navAvatar" aria-label="Profile" style="display:none;">
+              <i class="bi bi-person" id="navAvatarIcon"></i>
+            </a>
+            <a href="./login.html" class="btn btn-outline-primary btn-sm" id="navLoginBtn" style="display:none; font-weight: 600;">Login</a>
+            <button class="btn btn-sm text-danger" id="navLogoutBtn" style="display:none; font-size: 1.25rem;" title="Logout">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Restaurant Header -->
+  <div id="restaurantHeader" class="position-relative" style="height:280px; overflow:hidden; background: var(--dark);">
+    <img id="headerImage" src="" alt="" style="width:100%; height:100%; object-fit:cover; opacity:0.4;" />
+    <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+      <div class="container">
+        <a href="./menu.html" class="text-white text-decoration-none mb-2 d-inline-block" style="font-size: var(--fs-sm);">
+          <i class="bi bi-arrow-left"></i> Back to Restaurants
+        </a>
+        <h1 id="restaurantName" class="text-white fw-bold mb-1" style="font-size: var(--fs-3xl);"></h1>
+        <div class="d-flex flex-wrap align-items-center gap-3">
+          <span class="fh-rating" id="restaurantRating"></span>
+          <span class="text-white" style="opacity:0.7;" id="restaurantReviews"></span>
+          <span class="text-white" style="opacity:0.7;" id="restaurantCuisines"></span>
+          <span class="text-white" style="opacity:0.7;"><i class="bi bi-clock"></i> <span id="restaurantTime"></span> min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Content -->
+  <div class="container mt-4">
+    <div class="row g-4">
+      <!-- Category Sidebar -->
+      <div class="col-lg-3 d-none d-lg-block">
+        <div class="fh-filter-card sticky-top" style="top:90px;">
+          <p class="fh-filter-title">Categories</p>
+          <div id="categoriesList" class="d-flex flex-column gap-1"></div>
+        </div>
+      </div>
+
+      <!-- Menu Items -->
+      <div class="col-lg-9">
+        <div class="fh-search-wrapper mb-4">
+          <i class="bi bi-search"></i>
+          <input type="text" id="itemSearch" class="fh-search-input" placeholder="Search menu items..." />
+        </div>
+        <div id="itemsContainer" class="row g-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Cart Button -->
+  <a href="./cart.html" id="floatingCart" class="fh-floating-cart" style="display:none;">
+    <i class="bi bi-bag-fill"></i>
+    <span id="floatingCartCount">0</span> items &middot; ₹<span id="floatingCartTotal">0</span>
+    <i class="bi bi-arrow-right"></i>
+  </a>
+
+  <!-- Footer -->
+  <footer class="fh-footer mt-5">
+    <div class="container">
+      <div class="fh-footer-bottom text-center">
+        <p class="mb-0">&copy; 2026 FoodHub. Made with ❤️ | All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/services/restaurant.ts"></script>
+</body>
+
+</html>

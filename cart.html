@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Review your cart items, apply coupons, and proceed to checkout on FoodHub." />
+  <title>Your Cart — FoodHub</title>
+  <style>body{opacity:0;transition:opacity 0.2s ease-in;}</style>
+  <script>window.addEventListener('DOMContentLoaded',()=>document.body.style.opacity='1');</script>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <div class="container-fluid m-0 p-0 position-sticky top-0" style="z-index:100;">
+    <nav id="mainNavbar" class="navbar navbar-expand-md fh-navbar" role="navigation" aria-label="Main navigation">
+      <div class="container">
+        <a id="navLogo" href="./index.html" class="navbar-brand"><span>Food</span>Hub</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul id="navLinks" class="navbar-nav mx-auto gap-1">
+            <li class="nav-item"><a href="./index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="./menu.html" class="nav-link">Restaurants</a></li>
+            <li class="nav-item"><a href="./orders.html" class="nav-link">Orders</a></li>
+          </ul>
+          <div class="d-flex align-items-center gap-3">
+            <a href="./cart.html" class="fh-nav-icon" id="navCart" aria-label="Cart">
+              <i class="bi bi-bag"></i>
+              <span class="fh-nav-badge" id="navCartBadge" style="display:none;"></span>
+            </a>
+            <a href="./profile.html" class="fh-avatar-sm" id="navAvatar" aria-label="Profile" style="display:none;">
+              <i class="bi bi-person" id="navAvatarIcon"></i>
+            </a>
+            <a href="./login.html" class="btn btn-outline-primary btn-sm" id="navLoginBtn" style="display:none; font-weight: 600;">Login</a>
+            <button class="btn btn-sm text-danger" id="navLogoutBtn" style="display:none; font-size: 1.25rem;" title="Logout">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container mt-4 mb-5">
+    <h2 class="fh-section-title mb-1"><i class="bi bi-bag" style="color:var(--primary);"></i> Your Cart</h2>
+    <p class="fh-section-subtitle" id="cartSubtitle" style="margin-bottom:1.5rem;">Review your items before checkout</p>
+
+    <div class="row g-4">
+      <!-- Cart Items -->
+      <div class="col-lg-8">
+        <!-- Restaurant Banner -->
+        <div id="restaurantBanner" class="fh-cart-restaurant-banner" style="display:none;">
+          <i class="bi bi-shop"></i>
+          <span id="cartRestaurantName">—</span>
+        </div>
+        <div class="fh-card" style="min-height:300px;border-top-left-radius:0;border-top-right-radius:0;">
+          <div id="cartContent" class="p-2"></div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="col-lg-4">
+        <div class="fh-card p-4 sticky-top" style="top:90px;">
+          <h5 class="fw-bold mb-3">Order Summary</h5>
+
+          <!-- Coupon -->
+          <div class="mb-3">
+            <p class="fw-bold mb-1" style="font-size:var(--fs-sm); color:var(--gray-700);"><i class="bi bi-tag" style="color:var(--primary);"></i> Have a coupon?</p>
+            <div id="couponSection">
+              <div class="fh-coupon-group">
+                <input type="text" id="couponInput" class="fh-coupon-input" placeholder="ENTER CODE" maxlength="20" />
+                <button class="fh-btn-dark" style="padding:0.5rem 1rem;font-size:var(--fs-sm);" id="applyCouponBtn">Apply</button>
+              </div>
+              <small id="couponError" style="color:var(--danger);display:none;font-size:var(--fs-xs);"></small>
+              <div id="couponApplied" class="fh-coupon-applied mt-2" style="display:none;">
+                <span><i class="bi bi-check-circle"></i> <span id="couponCode"></span> applied</span>
+                <button class="btn btn-sm p-0" id="removeCouponBtn" style="color:var(--danger);"><i class="bi bi-x-lg"></i></button>
+              </div>
+              <!-- Quick coupon chips -->
+              <div class="fh-coupon-chips" id="couponChips">
+                <button class="fh-coupon-chip" data-coupon="SAVE10">SAVE10</button>
+                <button class="fh-coupon-chip" data-coupon="ZEN50">ZEN50</button>
+                <button class="fh-coupon-chip" data-coupon="FIRSTORDER">FIRSTORDER</button>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div id="cartSummarySection"></div>
+
+          <button type="button" id="checkoutBtn" class="fh-btn-primary w-100 justify-content-center mt-3" style="display:none;">
+            Proceed to Checkout <i class="bi bi-arrow-right"></i>
+          </button>
+
+          <!-- Security note -->
+          <div class="text-center mt-3" style="font-size:var(--fs-xs);color:var(--gray-600);">
+            <i class="bi bi-shield-check" style="color:var(--success);"></i> 100% Secure & Encrypted Checkout
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="fh-footer">
+    <div class="container">
+      <div class="fh-footer-bottom text-center">
+        <p class="mb-0">&copy; 2026 FoodHub. Made with ❤️ | All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/services/cart.ts"></script>
+</body>
+
+</html>
