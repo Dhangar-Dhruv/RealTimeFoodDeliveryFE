@@ -309,7 +309,7 @@ export class Checkout {
         zip: this.savedAddress?.zip ?? '',
       },
       paymentMethod: this.savedPayment || 'cash',
-      status: 'preparing',
+      status: 'confirmed',
       estimatedDelivery: eta.toISOString()
     };
 

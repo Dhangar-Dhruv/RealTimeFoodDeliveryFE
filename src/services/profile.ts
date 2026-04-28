@@ -24,7 +24,11 @@ class ProfilePage {
 
   constructor() {
     requireAuth();
-    this.loadData();
+    this.init();
+  }
+
+  private async init() {
+    await this.loadData();
     this.renderProfile();
     this.loadProfilePhoto();
     this.renderAddresses();

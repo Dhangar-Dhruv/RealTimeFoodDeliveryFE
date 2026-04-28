@@ -29,3 +29,24 @@ export const getMyOrders = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: 'Server error fetching orders' });
   }
 };
+
+export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    // Admin checking could go here, but for now we allow the frontend simulation to update it
+    const order = await Order.findOneAndUpdate(
+      { _id: id, userId: req.user?.id },
+      { status },
+      { new: true }
+    );
+    
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    
+    res.json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error updating order status' });
+  }
+};

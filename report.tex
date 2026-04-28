@@ -1,0 +1,152 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{\textbf{FoodHub} \\ \small{Real-Time Food Delivery System}}
+
+\author{\IEEEauthorblockN{Student Name: Dhruv Dhangar}
+\IEEEauthorblockA{Enrollment ID: \textbf{202201144} \\
+BTP Mode: \textbf{\textit{Off Campus / ITP}} \\
+\textit{School of Technology, Dhirubhai Ambani University, }\\
+Gandhinagar, India \\
+202201144@dau.ac.in}
+\and
+\IEEEauthorblockN{Mentor's Name: Varsha Oberoi}
+\IEEEauthorblockA{Company's Name: \textit{Radixweb} \\
+Company's Address: Ekyarth, Malabar County Rd \\
+Chharodi, Ahmedabad - 382481, India \\
+varsha.oberoi@radixweb.com \\
+On-Campus Mentor: BTP Coordinator}
+}
+
+\maketitle
+
+\begin{abstract}
+The Real-Time Food Delivery System is a comprehensive, scalable full-stack application engineered from the ground up to provide users with a seamless platform for browsing restaurant menus, managing digital carts, and securely executing checkout processes. The system is built utilizing Vite and TypeScript on the frontend, and Node.js with Express.js on the backend. MongoDB is used for efficient data persistence, while JSON Web Tokens (JWT) ensure secure authentication, authorization, and session persistence. This report presents the complete system architecture, design methodologies, advanced algorithms, implementation strategies, and key learning outcomes achieved during the development lifecycle.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Food Delivery, Full-Stack Development, TypeScript, Node.js, Express.js, MongoDB, Web Application, Authentication, API Design.
+\end{IEEEkeywords}
+
+\section{Introduction}
+In the modern digital economy, online food delivery platforms have become an essential service, significantly transforming the restaurant and hospitality ecosystem. The objective of this project was to design and develop a robust, scalable, and highly interactive Real-Time Food Delivery System from scratch, bypassing the limitations of monolithic designs by embracing modern, decoupled client-server architecture.
+
+The system is structured as a full-stack application with a clear separation of concerns between frontend and backend components. The frontend is implemented using Vite and TypeScript to ensure modularity, maintainability, fast Hot Module Replacement (HMR), and strict type safety. The backend is developed using Node.js and Express.js to handle business logic, scalable API routing, robust error handling, and secure data transactions. 
+
+The platform supports dynamic data fetching, real-time simulated order tracking, secure user authentication via JSON Web Tokens (JWT), and efficient document-based data storage using MongoDB. The architecture emphasizes performance, scalability, and security, ensuring it meets modern web standards and is suitable for real-world production deployment.
+
+\section{System Architecture}
+The Real-Time Food Delivery System was architected using a decoupled client-server model, ensuring maximum flexibility, testability, and the ability to scale the UI independently from the business logic layer.
+
+\subsection{Client-Side Architecture (Frontend)}
+The frontend is built as a highly responsive Single Page Application (SPA), emphasizing component reusability and seamless user experience without full page reloads.
+
+\begin{itemize}
+\item \textbf{Technology Stack:} TypeScript, HTML5, Vanilla CSS, and Bootstrap 5 for utility-based responsive styling.
+\item \textbf{Design Pattern:} Implements a class-based modular architecture featuring distinct service layers (e.g., \textit{MenuService}, \textit{CartService}, \textit{ProfileService}, and \textit{CheckoutService}). This encapsulates logic and API interactions away from the UI rendering layer.
+\item \textbf{User Interface:} Responsive UI consisting of a Landing Page for restaurant discovery, dynamic Menu Pages with active category filtering, a Persistent Cart System using local storage and server synchronization, an interactive Profile Page for user history, and a secure Checkout workflow.
+\end{itemize}
+
+\subsection{Server-Side Architecture (Backend)}
+The backend acts as the secure central processing unit, validating requests, enforcing business rules, and interacting with the database.
+
+\begin{itemize}
+\item \textbf{Technology Stack:} Node.js and Express.js with full TypeScript integration for type-safe backend development.
+\item \textbf{Routing \& Controllers:} A modular REST API design leveraging Express routers. Business logic is isolated within dedicated controllers (e.g., \textit{authController}, \textit{orderController}, \textit{restaurantController}), promoting clean code and Separation of Concerns (SoC).
+\item \textbf{Security \& Middleware:} Configured with strict CORS policies, structured request validation, password hashing using \textit{bcryptjs}, and custom JWT middleware to protect authenticated endpoints.
+\end{itemize}
+
+\subsection{Database Schema}
+MongoDB, a NoSQL database, was selected for its flexibility in handling hierarchical and unstructured data inherent in e-commerce systems. Mongoose is utilized as the Object Data Modeling (ODM) library to enforce schemas at the application level.
+
+\begin{itemize}
+\item \textbf{Users Collection:} Stores user profile details and hashed credentials. Implements case-insensitive unique indexing for emails to prevent duplicate account creation and ensure robust validation.
+\item \textbf{Restaurants \& Menus Collection:} Contains embedded sub-documents for menu categories and individual food items, allowing for rapid retrieval of complex menu structures in a single database query.
+\item \textbf{Orders Collection:} Stores comprehensive transactional data, including line items, subtotal calculations, delivery addresses, and real-time status tracking fields (e.g., Pending, Preparing, Out for Delivery, Delivered).
+\end{itemize}
+
+\section{Key Methodologies and Algorithms}
+Several critical methodologies and algorithms were integrated to ensure data integrity, security, and superior user experience.
+
+\subsection{Fuzzy Search Algorithm}
+A custom fuzzy search algorithm was implemented to dramatically improve the usability of the menu search functionality. This algorithm evaluates string similarity, allowing the system to match user queries against food items even with typographical errors or partial inputs. By dynamically scoring and ranking results, users receive highly relevant suggestions instantly.
+
+\subsection{Luhn Algorithm for Credit Card Validation}
+To ensure robust client-side validation before transmitting sensitive checkout data, the Luhn Algorithm (modulo 10 algorithm) was integrated. This cryptographic checksum validates the structural integrity of credit card numbers in real-time, preventing user errors from reaching the payment processing logic and reducing unnecessary server load.
+
+\subsection{JWT Authentication and Session Management}
+JSON Web Tokens (JWT) are employed for secure, stateless authentication. Upon successful login, the server issues a signed JWT containing user identity claims. The frontend handles this token intelligently: utilizing \textit{localStorage} for persistent sessions (via the "Remember Me" feature) or \textit{sessionStorage} for ephemeral sessions. Subsequent API requests attach this token via HTTP Authorization headers for access to protected routes.
+
+\subsection{State Persistence and Real-Time Updates}
+To maintain the integrity of an order lifecycle, order statuses are continually persisted to the backend. The frontend utilizes polling and state simulations that periodically send \textit{PUT} requests to update the order status. This guarantees that if a user reloads the page or navigates away, the order's progression accurately resumes from the server's source of truth rather than resetting.
+
+\section{Deployment and Infrastructure}
+The deployment strategy leverages modern cloud providers to enable continuous integration and high availability.
+
+\begin{itemize}
+\item \textbf{Frontend Hosting (Vercel):} The Vite-based application is deployed on Vercel, benefiting from its global Edge Network, automated deployments via GitHub, and aggressive caching for near-instant page loads.
+\item \textbf{Backend Hosting (Render):} The Node.js server is hosted on Render, offering seamless environment variable management for database URIs and JWT secrets, and robust monitoring of system health and API latency.
+\end{itemize}
+
+\section{Learning Outcomes}
+The development of the Real-Time Food Delivery System provided comprehensive exposure to full-cycle software engineering.
+
+\subsection{Technical Skills Acquired}
+\begin{itemize}
+\item \textbf{Full-Stack Integration:} Mastered bridging frontends with backends via REST APIs, handling CORS, and ensuring end-to-end type safety with TypeScript.
+\item \textbf{Advanced Asynchronous Logic:} Deepened understanding of JavaScript Promises, \texttt{async/await}, and concurrent data fetching mechanisms.
+\item \textbf{Database Architecture:} Gained practical experience in NoSQL data modeling, complex Mongoose aggregations, and query optimization.
+\item \textbf{Cloud Deployment Operations:} Acquired skills in CI/CD pipelines, production environment configurations, and secure secret management.
+\end{itemize}
+
+\subsection{Non-Technical Skills Acquired}
+\begin{itemize}
+\item \textbf{System Design \& Planning:} Learned to map out scalable architectures and database schemas before writing code.
+\item \textbf{Debugging \& Troubleshooting:} Enhanced analytical skills by debugging complex state persistence issues across network boundaries.
+\item \textbf{Lifecycle Management:} Experienced the full Software Development Life Cycle (SDLC) from ideation to production deployment.
+\end{itemize}
+
+\section{Contributions}
+Key contributions made to the development of the system include:
+
+\begin{itemize}
+\item \textbf{UI/UX Engineering:} Designed and developed visually appealing, responsive web interfaces utilizing HTML5, CSS3, and Bootstrap 5.
+\item \textbf{Frontend Architecture:} Engineered a scalable, object-oriented TypeScript frontend architecture built around modular service classes.
+\item \textbf{Backend System Design:} Developed robust RESTful APIs using Node.js and Express.js, structured with controllers and routers.
+\item \textbf{Security Implementation:} Implemented secure password hashing via \textit{bcryptjs} and a complete JWT-based authentication flow.
+\item \textbf{Algorithmic Integration:} Programmed and integrated the Fuzzy Search algorithm for menus and the Luhn validation algorithm for checkout logic.
+\item \textbf{Database Initialization:} Authored robust seeding scripts to populate the MongoDB database with realistic sample restaurants and hierarchical menus.
+\item \textbf{Infrastructure \& Deployment:} Configured the application for production, managing environment variables and deploying successfully on Vercel and Render.
+\end{itemize}
+
+\section{Conclusion and Future Scope}
+The Real-Time Food Delivery System demonstrates a successful, end-to-end full-stack implementation capable of handling complex real-world requirements such as scalability, stringent security, session management, and superior usability. The decoupled architecture ensures the platform can adapt to future technological advancements.
+
+Future enhancements planned for the system include:
+\begin{itemize}
+\item \textbf{WebSockets Integration:} Replacing simulated status polling with genuine real-time bidirectional communication using Socket.io.
+\item \textbf{Payment Gateway:} Integrating live payment processors such as Stripe or Razorpay for actual financial transactions.
+\item \textbf{AI-Driven Recommendations:} Implementing machine learning models to suggest food items based on past user purchase history and localized trends.
+\end{itemize}
+
+\begin{thebibliography}{00}
+\bibitem{b1} Node.js Foundation, ``Node.js Documentation,'' [Online]. Available: https://nodejs.org/en/docs/.
+\bibitem{b2} Microsoft, ``TypeScript Handbook,'' [Online]. Available: https://www.typescriptlang.org/docs/handbook/intro.html.
+\bibitem{b3} MongoDB Inc., ``MongoDB Manual,'' [Online]. Available: https://www.mongodb.com/docs/manual/.
+\bibitem{b4} Express.js, ``Express - Node.js web application framework,'' [Online]. Available: https://expressjs.com/.
+\bibitem{b5} Vercel, ``Vercel Documentation,'' [Online]. Available: https://vercel.com/docs.
+\bibitem{b6} H. P. Luhn, ``Computer for Verifying Numbers,'' U.S. Patent 2,950,048, Aug. 23, 1960.
+\bibitem{b7} M. Jones, J. Bradley, and N. Sakimura, ``JSON Web Token (JWT),'' RFC 7519, May 2015.
+\end{thebibliography}
+
+\end{document}

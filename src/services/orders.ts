@@ -49,28 +49,55 @@ class OrdersPage {
       if (res.ok) {
         const apiOrders = await res.json();
         // Map API response to TOrder shape
-        this.orders = apiOrders.map((o: any) => ({
-          orderId: o._id,
-          items: (o.items || []).map((i: any) => ({
-            itemId: i.menuItemId,
-            itemName: i.name,
-            price: i.price,
-            qty: i.qty,
-          })),
-          subtotal: o.subtotal,
-          surge: o.surge || 0,
-          tax: o.tax,
-          deliveryFee: o.deliveryFee,
-          discount: o.discount || 0,
-          total: o.total,
-          address: o.address || { street: '', city: '', zip: '' },
-          paymentMethod: o.paymentMethod,
-          status: this.mapStatus(o.status),
-          restaurantName: o.restaurantName,
-          placedAt: o.createdAt || new Date().toISOString(),
-          estimatedDelivery: o.estimatedDelivery || new Date(Date.now() + 35 * 60000).toISOString(),
-          deliveryPerson: getRandomDeliveryPerson(),
-        }));
+        this.orders = apiOrders.map((o: any) => {
+          let currentStatus = this.mapStatus(o.status);
+          const placedAt = o.createdAt || new Date().toISOString();
+          const elapsed = Date.now() - new Date(placedAt).getTime();
+          
+          if (currentStatus !== 'delivered') {
+            let expectedStatus: TDeliveryStatus = currentStatus;
+            if (elapsed >= 45000) expectedStatus = 'delivered';
+            else if (elapsed >= 30000) expectedStatus = 'out-for-delivery';
+            else if (elapsed >= 15000) expectedStatus = 'preparing';
+            else expectedStatus = 'confirmed';
+
+            const currentIdx = STATUS_ORDER.indexOf(currentStatus);
+            const expectedIdx = STATUS_ORDER.indexOf(expectedStatus);
+            if (expectedIdx > currentIdx) {
+              currentStatus = expectedStatus;
+              
+              // update backend fire and forget
+              fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/orders/${o._id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ status: currentStatus })
+              }).catch(() => {});
+            }
+          }
+
+          return {
+            orderId: o._id,
+            items: (o.items || []).map((i: any) => ({
+              itemId: i.menuItemId,
+              itemName: i.name,
+              price: i.price,
+              qty: i.qty,
+            })),
+            subtotal: o.subtotal,
+            surge: o.surge || 0,
+            tax: o.tax,
+            deliveryFee: o.deliveryFee,
+            discount: o.discount || 0,
+            total: o.total,
+            address: o.address || { street: '', city: '', zip: '' },
+            paymentMethod: o.paymentMethod,
+            status: currentStatus,
+            restaurantName: o.restaurantName,
+            placedAt: placedAt,
+            estimatedDelivery: o.estimatedDelivery || new Date(Date.now() + 35 * 60000).toISOString(),
+            deliveryPerson: getRandomDeliveryPerson(),
+          };
+        });
       }
     } catch {
       this.orders = [];
@@ -78,10 +105,9 @@ class OrdersPage {
   }
 
   private mapStatus(status: string): TDeliveryStatus {
+    if (STATUS_ORDER.includes(status as any)) return status as TDeliveryStatus;
     const map: Record<string, TDeliveryStatus> = {
-      'preparing': 'preparing',
       'on-the-way': 'out-for-delivery',
-      'delivered': 'delivered',
     };
     return map[status] || 'confirmed';
   }
@@ -110,61 +136,76 @@ class OrdersPage {
     }
 
     // History
-    historyContainer.innerHTML = '<h5 class="fw-bold mb-3">Order History</h5>';
+    historyContainer.innerHTML = '<h5 class="fw-bold mb-3 d-flex align-items-center gap-2"><i class="bi bi-clock-history text-primary"></i> Order History</h5>';
     this.orders.forEach((order, i) => {
       const card = document.createElement('div');
-      card.className = 'fh-card p-3 mb-3 fade-in';
+      card.className = 'fh-order-card mb-3 fade-in';
       card.style.animationDelay = `${i * 0.05}s`;
 
       const cfg = STATUS_CONFIG[order.status];
       card.innerHTML = `
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-              <span class="fw-bold" style="font-size:var(--fs-sm);">${order.orderId.substring(0, 10)}...</span>
-              <span class="fh-status-badge ${cfg.class}">${cfg.label}</span>
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+          <div class="d-flex align-items-center gap-3">
+            <div class="fh-avatar-sm" style="width: 45px; height: 45px; background: rgba(255,107,53,0.1); color: var(--primary); font-size: 1.2rem;">
+              <i class="bi bi-shop"></i>
             </div>
-            <p class="mb-1" style="font-size:var(--fs-sm);color:var(--gray-600);">
-              <i class="bi bi-shop"></i> ${order.restaurantName} · ${order.items.length} item${order.items.length > 1 ? 's' : ''}
-            </p>
-            <small style="color:var(--gray-600);">${timeAgo(order.placedAt)}</small>
+            <div>
+              <h6 class="fw-bold mb-0">${order.restaurantName}</h6>
+              <small style="color:var(--gray-600); font-weight: 500;">
+                ${timeAgo(order.placedAt)} • ₹${order.total}
+              </small>
+            </div>
           </div>
-          <div class="text-end">
-            <p class="fw-bold mb-1" style="color:var(--primary);">₹${order.total}</p>
-            <button class="btn btn-sm btn-outline-dark rounded-pill" data-order-toggle="${order.orderId}" style="font-size:var(--fs-xs);">
-              Details <i class="bi bi-chevron-down"></i>
-            </button>
-          </div>
+          <span class="fh-status-badge ${cfg.class}">${cfg.label}</span>
         </div>
-        <div id="detail-${order.orderId}" class="mt-3" style="display:none;">
-          <div class="p-3 rounded-3" style="background:var(--gray-100);">
-            <table class="table table-sm table-borderless mb-2" style="font-size:var(--fs-xs);">
-              <thead><tr><th>Item</th><th>Qty</th><th class="text-end">Price</th></tr></thead>
-              <tbody>
-                ${order.items.map(i => `<tr><td>${i.itemName}</td><td>${i.qty}</td><td class="text-end">₹${i.price * i.qty}</td></tr>`).join('')}
-              </tbody>
-            </table>
-            <hr class="my-2" />
-            <div class="d-flex justify-content-between" style="font-size:var(--fs-xs);">
-              <span>Subtotal</span><span class="fw-bold">₹${order.subtotal}</span>
-            </div>
-            ${order.discount > 0 ? `<div class="d-flex justify-content-between" style="font-size:var(--fs-xs);color:var(--success);">
-              <span>Discount</span><span>-₹${order.discount}</span>
-            </div>` : ''}
-            <div class="d-flex justify-content-between" style="font-size:var(--fs-xs);">
-              <span>Tax + Delivery</span><span>₹${order.tax + order.deliveryFee}</span>
-            </div>
-            <div class="d-flex justify-content-between mt-1" style="font-size:var(--fs-sm);">
-              <span class="fw-bold">Total</span><span class="fw-bold" style="color:var(--primary);">₹${order.total}</span>
-            </div>
-            <hr class="my-2" />
-            <div style="font-size:var(--fs-xs);color:var(--gray-600);">
-              <i class="bi bi-geo-alt"></i> ${order.address.street}, ${order.address.city} - ${order.address.zip}<br />
-              <i class="bi bi-credit-card"></i> ${order.paymentMethod}
-            </div>
+
+        <div class="d-flex justify-content-between align-items-end">
+          <div>
+            <p class="mb-1" style="font-size:var(--fs-sm);color:var(--dark); font-weight: 500;">
+              ${(() => {
+                const text = order.items.map(i => `${i.qty} x ${i.itemName}`).join(', ');
+                return text.length > 50 ? text.substring(0, 50) + '...' : text;
+              })()}
+            </p>
+            <p class="mb-0" style="font-size: 0.7rem; color:var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px;">
+              Order #${order.orderId.substring(0, 8)}
+            </p>
+          </div>
+          <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" data-order-toggle="${order.orderId}" style="font-size:var(--fs-xs);">
+            Details <i class="bi bi-chevron-down ms-1"></i>
+          </button>
+        </div>
+
+        <div id="detail-${order.orderId}" class="fh-order-item-list slide-up" style="display:none;">
+          <h6 class="fw-bold mb-2" style="font-size: 0.8rem; color: var(--gray-600); text-transform: uppercase;">Items</h6>
+          <div class="mb-3">
+            ${order.items.map(i => `
+              <div class="d-flex justify-content-between mb-1" style="font-size: var(--fs-sm);">
+                <span><span class="fw-bold text-dark">${i.qty}x</span> ${i.itemName}</span>
+                <span class="fw-bold">₹${i.price * i.qty}</span>
+              </div>
+            `).join('')}
+          </div>
+          <hr class="my-2 border-secondary opacity-25" />
+          <div class="d-flex justify-content-between" style="font-size:var(--fs-xs);">
+            <span class="text-secondary">Subtotal</span><span class="fw-bold">₹${order.subtotal}</span>
+          </div>
+          ${order.discount > 0 ? `<div class="d-flex justify-content-between" style="font-size:var(--fs-xs);color:var(--success);">
+            <span>Discount</span><span>-₹${order.discount}</span>
+          </div>` : ''}
+          <div class="d-flex justify-content-between" style="font-size:var(--fs-xs);">
+            <span class="text-secondary">Tax & Delivery</span><span>₹${order.tax + order.deliveryFee}</span>
+          </div>
+          <div class="d-flex justify-content-between mt-2 pt-2 border-top" style="font-size:var(--fs-sm);">
+            <span class="fw-bold">Total Paid</span><span class="fw-bold text-primary">₹${order.total}</span>
+          </div>
+          <div class="mt-3 pt-3 border-top" style="font-size:0.75rem; color:var(--gray-600); line-height: 1.5;">
+            <i class="bi bi-geo-alt-fill text-primary"></i> ${order.address.street}, ${order.address.city} - ${order.address.zip}<br />
+            <i class="bi bi-credit-card-fill text-primary mt-1"></i> Paid via ${order.paymentMethod}
           </div>
         </div>`;
       historyContainer.appendChild(card);
+
 
       // Toggle details
       card.querySelector(`[data-order-toggle="${order.orderId}"]`)?.addEventListener('click', (e) => {
@@ -202,29 +243,37 @@ class OrdersPage {
   }
 
   private renderTrackingSteps(currentStatus: TDeliveryStatus) {
-    const container = document.getElementById('trackingSteps') as HTMLElement;
+    const container = document.getElementById('trackingStepsContainer') as HTMLElement;
     const currentIdx = STATUS_ORDER.indexOf(currentStatus);
 
     const steps = [
-      { status: 'confirmed', label: 'Order Confirmed', desc: 'Your order has been placed and confirmed', icon: 'bi-check-circle' },
-      { status: 'preparing', label: 'Preparing Food', desc: 'The restaurant is preparing your food', icon: 'bi-fire' },
-      { status: 'out-for-delivery', label: 'Out for Delivery', desc: 'Your order is on the way', icon: 'bi-truck' },
-      { status: 'delivered', label: 'Delivered', desc: 'Enjoy your meal!', icon: 'bi-house-check' },
+      { status: 'confirmed', label: 'Confirmed', icon: 'bi-check-lg' },
+      { status: 'preparing', label: 'Preparing', icon: 'bi-fire' },
+      { status: 'out-for-delivery', label: 'On the Way', icon: 'bi-truck' },
+      { status: 'delivered', label: 'Delivered', icon: 'bi-house-check-fill' },
     ];
 
-    container.innerHTML = steps.map((step, i) => {
-      const isCompleted = i < currentIdx;
-      const isActive = i === currentIdx;
-      const cls = isCompleted ? 'completed' : (isActive ? 'active' : '');
-      return `
-        <div class="fh-tracking-step ${cls}">
-          <div class="fh-tracking-dot"><i class="bi ${step.icon}"></i></div>
-          <div>
-            <p class="fw-bold mb-0" style="font-size:var(--fs-sm);">${step.label}</p>
-            <small style="color:var(--gray-600);">${step.desc}</small>
-          </div>
-        </div>`;
-    }).join('');
+    const progressPct = currentIdx === 0 ? 0 : currentIdx === 1 ? 33 : currentIdx === 2 ? 66 : 100;
+
+    container.innerHTML = `
+      <div class="fh-timeline-wrapper">
+        <div class="fh-timeline-bg"></div>
+        <div class="fh-timeline-fill" style="width: ${progressPct}%"></div>
+        ${steps.map((step, i) => {
+          const isCompleted = i <= currentIdx;
+          const isActive = i === currentIdx;
+          let cls = isCompleted ? 'completed' : '';
+          if (isActive && i < steps.length - 1) cls = 'active';
+          
+          return `
+            <div class="fh-timeline-step ${cls}">
+              <div class="fh-timeline-icon"><i class="bi ${step.icon}"></i></div>
+              <span class="fh-timeline-label">${step.label}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
   }
 
   private startEtaCountdown(etaStr: string) {
@@ -246,7 +295,7 @@ class OrdersPage {
 
   private startStatusSimulation(order: TOrder) {
     // Simulate order status progression every 15 seconds
-    this.simulationInterval = window.setInterval(() => {
+    this.simulationInterval = window.setInterval(async () => {
       const idx = STATUS_ORDER.indexOf(order.status);
       if (idx < STATUS_ORDER.length - 1) {
         order.status = STATUS_ORDER[idx + 1];
@@ -258,6 +307,18 @@ class OrdersPage {
           const cfg = STATUS_CONFIG[order.status];
           historyBadge.className = `fh-status-badge ${cfg.class}`;
           historyBadge.textContent = cfg.label;
+        }
+        
+        // Persist status to backend
+        try {
+          const token = localStorage.getItem('fh-auth') || sessionStorage.getItem('fh-auth');
+          await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/orders/${order.orderId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ status: order.status })
+          });
+        } catch (e) {
+          console.error('Failed to update status', e);
         }
 
         if (order.status === 'delivered') {

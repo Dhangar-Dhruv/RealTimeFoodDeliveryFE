@@ -24,34 +24,47 @@ class AuthPage {
     }
 
     this.setupTabs();
+    this.setupPasswordToggle();
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+  }
+
+  private setupPasswordToggle() {
+    const toggleBtn = document.getElementById('togglePassword');
+    const icon = document.getElementById('togglePasswordIcon');
+    if (!toggleBtn || !icon) return;
+    
+    toggleBtn.addEventListener('click', () => {
+      const type = this.inputPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+      this.inputPassword.setAttribute('type', type);
+      icon.className = type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+    });
   }
 
   private setupTabs() {
     this.tabLogin.addEventListener('click', () => {
       this.isLoginMode = true;
-      this.tabLogin.className = 'cursor-pointer';
-      this.tabLogin.style.color = 'var(--primary)';
-      this.tabLogin.style.borderBottom = '2px solid var(--primary)';
-      this.tabRegister.className = 'cursor-pointer text-muted';
-      this.tabRegister.style.borderBottom = 'none';
+      this.tabLogin.className = 'fh-auth-tab active';
+      this.tabRegister.className = 'fh-auth-tab text-muted';
       
       this.nameGroup.style.display = 'none';
       this.inputName.required = false;
       this.submitBtn.textContent = 'Sign In';
+      
+      const rememberGroup = document.getElementById('rememberMeGroup');
+      if (rememberGroup) rememberGroup.style.display = 'flex';
     });
 
     this.tabRegister.addEventListener('click', () => {
       this.isLoginMode = false;
-      this.tabRegister.className = 'cursor-pointer';
-      this.tabRegister.style.color = 'var(--primary)';
-      this.tabRegister.style.borderBottom = '2px solid var(--primary)';
-      this.tabLogin.className = 'cursor-pointer text-muted';
-      this.tabLogin.style.borderBottom = 'none';
+      this.tabRegister.className = 'fh-auth-tab active';
+      this.tabLogin.className = 'fh-auth-tab text-muted';
       
       this.nameGroup.style.display = 'block';
       this.inputName.required = true;
       this.submitBtn.textContent = 'Create Account';
+      
+      const rememberGroup = document.getElementById('rememberMeGroup');
+      if (rememberGroup) rememberGroup.style.display = 'none';
     });
   }
 
@@ -65,6 +78,8 @@ class AuthPage {
 
     const email = this.inputEmail.value.trim();
     const password = this.inputPassword.value.trim();
+    const rememberMeCheckbox = document.getElementById('rememberMe') as HTMLInputElement;
+    const rememberMe = rememberMeCheckbox ? rememberMeCheckbox.checked : true;
     
     const submitBtn = this.form.querySelector('button[type="submit"]') as HTMLButtonElement;
     submitBtn.disabled = true;
@@ -80,7 +95,7 @@ class AuthPage {
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Login failed');
         
-        login(data.user, data.token);
+        login(data.user, data.token, rememberMe);
       } else {
         const name = this.inputName.value.trim();
         const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/auth/register`, {
@@ -91,7 +106,7 @@ class AuthPage {
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Registration failed');
         
-        login(data.user, data.token);
+        login(data.user, data.token, true);
       }
     } catch (err: any) {
       const alertMsg = document.getElementById('alertMsg');

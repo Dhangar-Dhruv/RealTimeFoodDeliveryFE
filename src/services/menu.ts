@@ -104,14 +104,23 @@ class RestaurantListPage {
     });
   }
 
+  private fuzzyMatch(str: string, query: string): boolean {
+    let i = 0, j = 0;
+    while (i < str.length && j < query.length) {
+      if (str[i] === query[j]) j++;
+      i++;
+    }
+    return j === query.length;
+  }
+
   private applyFilters() {
     const query = this.searchInput.value.trim().toLowerCase();
 
     let results = this.allRestaurants.filter(r => {
       // Search
       if (query) {
-        const matchName = r.name.toLowerCase().includes(query);
-        const matchCuisine = r.cuisines.some(c => c.toLowerCase().includes(query));
+        const matchName = this.fuzzyMatch(r.name.toLowerCase(), query);
+        const matchCuisine = r.cuisines.some(c => this.fuzzyMatch(c.toLowerCase(), query));
         if (!matchName && !matchCuisine) return false;
       }
       // Cuisine filter

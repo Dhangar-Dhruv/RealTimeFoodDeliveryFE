@@ -22,7 +22,7 @@ export interface IOrder extends Document {
     zip: string;
   };
   paymentMethod: string;
-  status: 'preparing' | 'on-the-way' | 'delivered';
+  status: 'confirmed' | 'preparing' | 'out-for-delivery' | 'delivered';
   estimatedDelivery: Date;
 }
 
@@ -48,7 +48,7 @@ const orderSchema = new Schema<IOrder>({
     zip: String
   },
   paymentMethod: { type: String, required: true },
-  status: { type: String, enum: ['preparing', 'on-the-way', 'delivered'], default: 'preparing' },
+  status: { type: String, enum: ['confirmed', 'preparing', 'out-for-delivery', 'delivered'], default: 'confirmed' },
   estimatedDelivery: { type: Date, required: true }
 }, { timestamps: true });
 
