@@ -31,7 +31,7 @@ On-Campus Mentor: BTP Coordinator}
 \maketitle
 
 \begin{abstract}
-The Real-Time Food Delivery System is a comprehensive, scalable full-stack application engineered from the ground up to provide users with a seamless platform for browsing restaurant menus, managing digital carts, and securely executing checkout processes. The system is built utilizing Vite and TypeScript on the frontend, and Node.js with Express.js on the backend. MongoDB is used for efficient data persistence, while JSON Web Tokens (JWT) ensure secure authentication, authorization, and session persistence. This report presents the complete system architecture, design methodologies, advanced algorithms, implementation strategies, and key learning outcomes achieved during the development lifecycle.
+This report details the development of FoodHub, a real-time food delivery web application. The primary goal of the project was to build a functional platform where users can browse local restaurants, add items to a digital cart, and place orders securely. The application uses a decoupled client-server architecture. The frontend is built with Vite and TypeScript \cite{b2}, while the backend relies on Node.js \cite{b1} and Express.js \cite{b4}. For data storage, we chose MongoDB \cite{b3} to handle the complex, nested menu and order data flexibly. We also implemented JSON Web Tokens (JWT) \cite{b7} for secure user authentication. Throughout this report, we discuss the overall system design, the specific algorithms used (such as fuzzy search for the menu and the Luhn algorithm for checkout validation), and the practical lessons learned while building and deploying a full-stack project from scratch.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -39,104 +39,104 @@ Food Delivery, Full-Stack Development, TypeScript, Node.js, Express.js, MongoDB,
 \end{IEEEkeywords}
 
 \section{Introduction}
-In the modern digital economy, online food delivery platforms have become an essential service, significantly transforming the restaurant and hospitality ecosystem. The objective of this project was to design and develop a robust, scalable, and highly interactive Real-Time Food Delivery System from scratch, bypassing the limitations of monolithic designs by embracing modern, decoupled client-server architecture.
+Online food delivery has become a standard service for the restaurant industry today. The goal of this project was to build a working food delivery application from the ground up to understand how these systems operate behind the scenes. Instead of building a single monolithic application where everything is tangled together, we decided to use a modern client-server architecture, cleanly splitting the frontend and backend.
 
-The system is structured as a full-stack application with a clear separation of concerns between frontend and backend components. The frontend is implemented using Vite and TypeScript to ensure modularity, maintainability, fast Hot Module Replacement (HMR), and strict type safety. The backend is developed using Node.js and Express.js to handle business logic, scalable API routing, robust error handling, and secure data transactions. 
+The frontend uses Vite to bundle our TypeScript code \cite{b2}. This setup makes the development process faster and helps catch errors early through strict type checking. The backend is a separate Node.js server using the Express framework \cite{b4}, which is responsible for managing the core business logic, processing incoming orders, and interacting with the database.
 
-The platform supports dynamic data fetching, real-time simulated order tracking, secure user authentication via JSON Web Tokens (JWT), and efficient document-based data storage using MongoDB. The architecture emphasizes performance, scalability, and security, ensuring it meets modern web standards and is suitable for real-world production deployment.
+By breaking the system into these two distinct parts, we ensure the application is much easier to maintain and debug. It also makes it easier to scale the application if more users start placing orders simultaneously. The final system includes essential features like dynamic data fetching, real-time order tracking, and secure user logins using JSON Web Tokens (JWT) \cite{b7}.
 
 \section{System Architecture}
-The Real-Time Food Delivery System was architected using a decoupled client-server model, ensuring maximum flexibility, testability, and the ability to scale the UI independently from the business logic layer.
+We designed the FoodHub application using a decoupled approach. This means the user interface operates entirely independently from the server-side logic, communicating only via API requests.
 
 \subsection{Client-Side Architecture (Frontend)}
-The frontend is built as a highly responsive Single Page Application (SPA), emphasizing component reusability and seamless user experience without full page reloads.
+The frontend is built as a Single Page Application (SPA). This approach prevents the browser from reloading the entire page every time the user clicks a link, which makes the app feel much faster and more responsive.
 
 \begin{itemize}
-\item \textbf{Technology Stack:} TypeScript, HTML5, Vanilla CSS, and Bootstrap 5 for utility-based responsive styling.
-\item \textbf{Design Pattern:} Implements a class-based modular architecture featuring distinct service layers (e.g., \textit{MenuService}, \textit{CartService}, \textit{ProfileService}, and \textit{CheckoutService}). This encapsulates logic and API interactions away from the UI rendering layer.
-\item \textbf{User Interface:} Responsive UI consisting of a Landing Page for restaurant discovery, dynamic Menu Pages with active category filtering, a Persistent Cart System using local storage and server synchronization, an interactive Profile Page for user history, and a secure Checkout workflow.
+\item \textbf{Technology Stack:} We used TypeScript \cite{b2}, plain HTML5, and standard CSS, along with Bootstrap 5 to help with layout and responsive design.
+\item \textbf{Design Pattern:} The code is organized into modular service classes (like \textit{MenuService} and \textit{CartService}). These classes handle fetching data from the API so that the user interface code doesn't get cluttered with network requests.
+\item \textbf{User Interface:} The app includes a home page for restaurant discovery, a menu page with category filters, a shopping cart that saves your items using local storage, a profile section for order history, and a secure checkout page.
 \end{itemize}
 
 \subsection{Server-Side Architecture (Backend)}
-The backend acts as the secure central processing unit, validating requests, enforcing business rules, and interacting with the database.
+The backend acts as the brain of the application. It processes incoming requests, checks if they are valid, and reads or writes data to the database.
 
 \begin{itemize}
-\item \textbf{Technology Stack:} Node.js and Express.js with full TypeScript integration for type-safe backend development.
-\item \textbf{Routing \& Controllers:} A modular REST API design leveraging Express routers. Business logic is isolated within dedicated controllers (e.g., \textit{authController}, \textit{orderController}, \textit{restaurantController}), promoting clean code and Separation of Concerns (SoC).
-\item \textbf{Security \& Middleware:} Configured with strict CORS policies, structured request validation, password hashing using \textit{bcryptjs}, and custom JWT middleware to protect authenticated endpoints.
+\item \textbf{Technology Stack:} The server is built with Node.js \cite{b1} and Express.js \cite{b4}. We also wrote the backend in TypeScript to keep our data types consistent across both sides of the project.
+\item \textbf{Routing and Controllers:} We split the API endpoints into different routers. For example, all order-related requests go to the \textit{orderController}. This keeps the codebase organized and easier to read.
+\item \textbf{Security:} We added middleware to handle Cross-Origin Resource Sharing (CORS), validate incoming data, and hash user passwords using the \textit{bcryptjs} library before saving them. We also set up custom middleware to verify JWTs for routes that require the user to be logged in \cite{b7}.
 \end{itemize}
 
 \subsection{Database Schema}
-MongoDB, a NoSQL database, was selected for its flexibility in handling hierarchical and unstructured data inherent in e-commerce systems. Mongoose is utilized as the Object Data Modeling (ODM) library to enforce schemas at the application level.
+We used MongoDB \cite{b3}, which is a NoSQL database. It is a great fit for an e-commerce app because things like restaurant menus can be stored as nested objects rather than rigid, flat tables. We used Mongoose to interact with MongoDB and enforce rules on our data.
 
 \begin{itemize}
-\item \textbf{Users Collection:} Stores user profile details and hashed credentials. Implements case-insensitive unique indexing for emails to prevent duplicate account creation and ensure robust validation.
-\item \textbf{Restaurants \& Menus Collection:} Contains embedded sub-documents for menu categories and individual food items, allowing for rapid retrieval of complex menu structures in a single database query.
-\item \textbf{Orders Collection:} Stores comprehensive transactional data, including line items, subtotal calculations, delivery addresses, and real-time status tracking fields (e.g., Pending, Preparing, Out for Delivery, Delivered).
+\item \textbf{Users Collection:} This stores user details and hashed passwords. We made sure email addresses are stored as unique, case-insensitive values so users can't accidentally create duplicate accounts.
+\item \textbf{Restaurants and Menus Collection:} This stores restaurant details and their food items. Because MongoDB allows nested data, we can pull a restaurant and its entire menu in a single, fast database request.
+\item \textbf{Orders Collection:} This tracks user purchases. It saves the items bought, the total cost, the delivery address, and the current status of the order (like ``Preparing'' or ``Delivered'').
 \end{itemize}
 
 \section{Key Methodologies and Algorithms}
-Several critical methodologies and algorithms were integrated to ensure data integrity, security, and superior user experience.
+While building the app, we implemented several specific algorithms to improve how the system handles user input and security.
 
 \subsection{Fuzzy Search Algorithm}
-A custom fuzzy search algorithm was implemented to dramatically improve the usability of the menu search functionality. This algorithm evaluates string similarity, allowing the system to match user queries against food items even with typographical errors or partial inputs. By dynamically scoring and ranking results, users receive highly relevant suggestions instantly.
+We wrote a custom fuzzy search function for the restaurant menu. Instead of just looking for exact word matches, this algorithm checks how similar the user's search string is to the food item names. This means that if a user makes a typo while searching, the app can still figure out what they are looking for and show the right results.
 
 \subsection{Luhn Algorithm for Credit Card Validation}
-To ensure robust client-side validation before transmitting sensitive checkout data, the Luhn Algorithm (modulo 10 algorithm) was integrated. This cryptographic checksum validates the structural integrity of credit card numbers in real-time, preventing user errors from reaching the payment processing logic and reducing unnecessary server load.
+To make the checkout process smoother, we implemented the Luhn algorithm \cite{b6} on the frontend. This is a mathematical formula used to check if a credit card number is structurally valid. By running this check directly in the user's browser, we can immediately tell them if they made a typo, without needing to send bad data to the server first.
 
 \subsection{JWT Authentication and Session Management}
-JSON Web Tokens (JWT) are employed for secure, stateless authentication. Upon successful login, the server issues a signed JWT containing user identity claims. The frontend handles this token intelligently: utilizing \textit{localStorage} for persistent sessions (via the "Remember Me" feature) or \textit{sessionStorage} for ephemeral sessions. Subsequent API requests attach this token via HTTP Authorization headers for access to protected routes.
+For user logins, we decided to use JSON Web Tokens \cite{b7}. When a user logs in successfully, the backend creates a token and sends it back to the browser. If the user selects ``Remember Me,'' we save this token in \textit{localStorage} so they don't have to log in again later. If they don't, we put it in \textit{sessionStorage} so it deletes automatically when they close the tab. Every time the app needs to fetch private data, it simply attaches this token to the request header.
 
 \subsection{State Persistence and Real-Time Updates}
-To maintain the integrity of an order lifecycle, order statuses are continually persisted to the backend. The frontend utilizes polling and state simulations that periodically send \textit{PUT} requests to update the order status. This guarantees that if a user reloads the page or navigates away, the order's progression accurately resumes from the server's source of truth rather than resetting.
+One of the challenges of order tracking is making sure the status doesn't reset if the user refreshes the page. We solved this by having the frontend periodically check and sync the order status with the backend. This way, the server always holds the true state of the order, and the frontend simply displays what the server tells it.
 
 \section{Deployment and Infrastructure}
-The deployment strategy leverages modern cloud providers to enable continuous integration and high availability.
+Once the code was finished, we deployed the application to live cloud servers so it can be accessed over the internet.
 
 \begin{itemize}
-\item \textbf{Frontend Hosting (Vercel):} The Vite-based application is deployed on Vercel, benefiting from its global Edge Network, automated deployments via GitHub, and aggressive caching for near-instant page loads.
-\item \textbf{Backend Hosting (Render):} The Node.js server is hosted on Render, offering seamless environment variable management for database URIs and JWT secrets, and robust monitoring of system health and API latency.
+\item \textbf{Frontend Hosting (Vercel):} We deployed the frontend application on Vercel \cite{b5}. Vercel makes it very easy to host frontend projects, and it automatically updates the live website whenever we push new code to our GitHub repository.
+\item \textbf{Backend Hosting (Render):} We hosted the Node.js server on Render. Render gives us a safe place to store our secret environment variables (like the MongoDB connection string and the JWT secret key) and keeps the server running continuously.
 \end{itemize}
 
 \section{Learning Outcomes}
-The development of the Real-Time Food Delivery System provided comprehensive exposure to full-cycle software engineering.
+Building this project from scratch was a huge learning experience. It required understanding how all the different pieces of a modern web application fit together.
 
 \subsection{Technical Skills Acquired}
 \begin{itemize}
-\item \textbf{Full-Stack Integration:} Mastered bridging frontends with backends via REST APIs, handling CORS, and ensuring end-to-end type safety with TypeScript.
-\item \textbf{Advanced Asynchronous Logic:} Deepened understanding of JavaScript Promises, \texttt{async/await}, and concurrent data fetching mechanisms.
-\item \textbf{Database Architecture:} Gained practical experience in NoSQL data modeling, complex Mongoose aggregations, and query optimization.
-\item \textbf{Cloud Deployment Operations:} Acquired skills in CI/CD pipelines, production environment configurations, and secure secret management.
+\item \textbf{Full-Stack Integration:} We learned how to properly connect a frontend interface to a backend API and how to fix common networking issues like CORS errors.
+\item \textbf{Asynchronous Programming:} We got a lot of practice using JavaScript Promises and \texttt{async/await} to handle network requests without freezing the web page.
+\item \textbf{Database Management:} We learned how to design a NoSQL database schema and write practical queries using Mongoose \cite{b3}.
+\item \textbf{Deployment:} We figured out how to take code from a local development environment and put it on live servers like Vercel and Render.
 \end{itemize}
 
 \subsection{Non-Technical Skills Acquired}
 \begin{itemize}
-\item \textbf{System Design \& Planning:} Learned to map out scalable architectures and database schemas before writing code.
-\item \textbf{Debugging \& Troubleshooting:} Enhanced analytical skills by debugging complex state persistence issues across network boundaries.
-\item \textbf{Lifecycle Management:} Experienced the full Software Development Life Cycle (SDLC) from ideation to production deployment.
+\item \textbf{Planning:} We learned that designing the database structure and planning the API endpoints on paper before writing code saves a massive amount of time later.
+\item \textbf{Debugging:} We significantly improved our ability to track down bugs, especially when data wasn't passing correctly between the frontend and the backend.
+\item \textbf{Project Lifecycle:} We experienced the full software development lifecycle, from the initial idea all the way to a live production deployment.
 \end{itemize}
 
 \section{Contributions}
-Key contributions made to the development of the system include:
+Throughout the development process, several major tasks were completed to bring the project to life:
 
 \begin{itemize}
-\item \textbf{UI/UX Engineering:} Designed and developed visually appealing, responsive web interfaces utilizing HTML5, CSS3, and Bootstrap 5.
-\item \textbf{Frontend Architecture:} Engineered a scalable, object-oriented TypeScript frontend architecture built around modular service classes.
-\item \textbf{Backend System Design:} Developed robust RESTful APIs using Node.js and Express.js, structured with controllers and routers.
-\item \textbf{Security Implementation:} Implemented secure password hashing via \textit{bcryptjs} and a complete JWT-based authentication flow.
-\item \textbf{Algorithmic Integration:} Programmed and integrated the Fuzzy Search algorithm for menus and the Luhn validation algorithm for checkout logic.
-\item \textbf{Database Initialization:} Authored robust seeding scripts to populate the MongoDB database with realistic sample restaurants and hierarchical menus.
-\item \textbf{Infrastructure \& Deployment:} Configured the application for production, managing environment variables and deploying successfully on Vercel and Render.
+\item \textbf{UI/UX Engineering:} We designed and built a responsive, custom user interface.
+\item \textbf{Frontend Architecture:} We set up the TypeScript project \cite{b2} and organized the code into reusable service classes.
+\item \textbf{Backend Development:} We wrote the Express server \cite{b4}, creating all the necessary API routes, models, and controllers.
+\item \textbf{Security:} We implemented password hashing and the complete JWT login system \cite{b7}.
+\item \textbf{Algorithmic Work:} We wrote the logic for the fuzzy menu search and the client-side credit card validation \cite{b6}.
+\item \textbf{Database Setup:} We wrote scripts to automatically fill the database with sample restaurants and menu items so we could test the app thoroughly.
+\item \textbf{Deployment:} We successfully deployed both parts of the application to the internet.
 \end{itemize}
 
 \section{Conclusion and Future Scope}
-The Real-Time Food Delivery System demonstrates a successful, end-to-end full-stack implementation capable of handling complex real-world requirements such as scalability, stringent security, session management, and superior usability. The decoupled architecture ensures the platform can adapt to future technological advancements.
+The FoodHub project successfully demonstrates how a modern, full-stack web application is built. We managed to create a system that handles user accounts, displays dynamic data, processes simulated orders, and tracks deliveries. Breaking the project into a separate frontend and backend proved to be a great decision, as it kept development highly organized.
 
-Future enhancements planned for the system include:
+Looking forward, there are a few features we would like to add:
 \begin{itemize}
-\item \textbf{WebSockets Integration:} Replacing simulated status polling with genuine real-time bidirectional communication using Socket.io.
-\item \textbf{Payment Gateway:} Integrating live payment processors such as Stripe or Razorpay for actual financial transactions.
-\item \textbf{AI-Driven Recommendations:} Implementing machine learning models to suggest food items based on past user purchase history and localized trends.
+\item \textbf{WebSockets:} Right now, the frontend asks the server for order updates by polling. We'd like to replace this with WebSockets so the server can push updates to the browser instantly.
+\item \textbf{Real Payments:} We currently simulate the checkout process. In the future, we want to integrate a live payment provider like Stripe or Razorpay.
+\item \textbf{Recommendations:} It would be interesting to use basic machine learning to suggest food items to users based on their past purchase history.
 \end{itemize}
 
 \begin{thebibliography}{00}
